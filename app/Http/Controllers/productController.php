@@ -14,8 +14,8 @@ class productController extends Controller
      */
     public function index()
     {
-        $pro=productModel::all()->sortBy('id');
-        return view('admin.product.index',compact('pro'));
+        $pro = productModel::all()->sortBy('id');
+        return view('admin.product.index', compact('pro'));
     }
 
     /**
@@ -24,7 +24,7 @@ class productController extends Controller
     public function create()
     {
         $pro = Catagory::all();
-        return view('admin.product.create',compact('pro'));
+        return view('admin.product.create', compact('pro'));
     }
 
     /**
@@ -33,15 +33,18 @@ class productController extends Controller
     public function store(Request $request)
     {
 
-        $requestData = $request->all();
-        $fileName = time().$request->file('image')->getClientOriginalName();
-        $path = $request->file('image')->storeAs('images', $fileName, 'public');
-        $requestData["image"] = '/storage/'.$path;
-        productModel::create($requestData);
 
-          Return redirect('/product')->with('status',"sucessfull");
+
+        $requestData = $request->all();
+
 
         
+        $fileName = time() . $request->file('image')->getClientOriginalName();
+        $path = $request->file('image')->storeAs('images', $fileName, 'public');
+        $requestData["image"] = '/storage/' . $path;
+        productModel::create($requestData);
+
+        return redirect('/product')->with('status', "sucessfull");
     }
 
     /**
@@ -59,15 +62,15 @@ class productController extends Controller
     {
         // $pro=productModel::find($id);
         // return view('admin.product.index');
-       $product=productModel::find($id);
-       return view('admin.product.edit',compact('product'));
+        $product = productModel::find($id);
+        return view('admin.product.edit', compact('product'));
     }
-   
+
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-    { 
+    {
         $request->validate([
             'cate_id' => 'required',
             'productName' => 'required',
@@ -75,19 +78,18 @@ class productController extends Controller
             'priceout' => 'required',
             'stock' => 'required',
             'image' => 'required|image',
-          ]);
-        
-          $fileName = time().$request->file('image')->getClientOriginalName();
-          $path = $request->file('image')->storeAs('images', $fileName, 'public');
-          $requestData["image"] = '/storage/'.$path;
-        
-          $product = productModel::updateOrCreate(
+        ]);
+
+        $fileName = time() . $request->file('image')->getClientOriginalName();
+        $path = $request->file('image')->storeAs('images', $fileName, 'public');
+        $requestData["image"] = '/storage/' . $path;
+
+        $product = productModel::updateOrCreate(
             ['id' => $id],
             $request->all()
-          );
-        
-          return redirect('/product')->with('status', 'Product updated successfully');
-        
+        );
+
+        return redirect('/product')->with('status', 'Product updated successfully');
     }
 
     /**
@@ -95,8 +97,7 @@ class productController extends Controller
      */
     public function destroy(string $id)
     {
-      productModel::find($id)->delete();
-        return Redirect('/product')->with('status',"product Deleted successfull");
+        productModel::find($id)->delete();
+        return Redirect('/product')->with('status', "product Deleted successfull");
     }
-    
 }
