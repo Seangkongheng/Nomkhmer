@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Intervention\Image\Facades\Image;
 use App\Models\Catagory;
 use App\Models\productModel;
 use Illuminate\Http\Request;
@@ -32,20 +33,25 @@ class productController extends Controller
      */
     public function store(Request $request)
     {
-
-
-
         $requestData = $request->all();
 
-
-        
-        $fileName = time() . $request->file('image')->getClientOriginalName();
-        $path = $request->file('image')->storeAs('images', $fileName, 'public');
-        $requestData["image"] = '/storage/' . $path;
+        $images = [];
+        if ($request->hasFile('image')) {
+            foreach ($request->file('image') as $file) {
+                $newImageName = time() . '-' . $file->getClientOriginalName();
+                $imgx = Image::make($file->getRealPath());
+                $imgx->resize(360, 360, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $file->move(public_path('storage/images'), $newImageName);
+                $images[] = $newImageName;
+            }
+        }
+        $requestData['image'] = json_encode($images);
         productModel::create($requestData);
-
-        return redirect('/product')->with('status', "sucessfull");
+        return redirect('/product')->with('status', 'successful');
     }
+
 
     /**
      * Display the specified resource.
