@@ -23,7 +23,7 @@
     </style>
     <div class="card">
         <div class="card-body">
-            <form class="" action="/product" method="POST" enctype="multipart/form-data">
+            <form id="uploadForm" class="" action="/product" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="row">
                     <div class="col-md-6 mb-3">
@@ -77,3 +77,26 @@
         </div>
     </div>
 @endsection
+
+{{-- --------------------script for upload image------------------------- --}}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $('#uploadForm').on('submit', function(event) {
+        event.preventDefault();
+        var formData = new FormData(this);
+
+        $.ajax({
+            url: '/product',
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                alert('Upload successful!');
+            },
+            error: function(response) {
+                alert('Upload failed!');
+            }
+        });
+    });
+</script>

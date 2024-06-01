@@ -21,9 +21,6 @@
     <style>
         .dropdown {
             margin-right: 10px;
-
-
-
         }
 
         .btn {
@@ -78,7 +75,6 @@
         .cart-detail .count {
             color: #000;
         }
-        
     </style>
 </head>
 
@@ -280,12 +276,13 @@
                     <div class="image-detail">
                         <div class="image-nom-detail">
                             <div class="image">
-                                @if (isset($product_detail->image) && !empty(json_decode($product_detail->image)))
+
+                                @if (isset($product_detail->image) && !empty($product_detail->image))
                                     @php
                                         $images = json_decode($product_detail->image);
                                     @endphp
-                                    @if (!empty($images[0]))
-                                        <img src="{{ asset('storage/images/' . $images[0]) }}" alt="">
+                                    @if (!empty($images) && isset($images[0]))
+                                        <img src="{{ asset('image-product/' . $images[0]) }}" alt="Product Image">
                                     @else
                                         <p>No Image</p>
                                     @endif
@@ -293,10 +290,6 @@
                                     <p>No Image</p>
                                 @endif
 
-
-
-
-                                <img src="{{ asset($product_detail->image) }}" alt="">
                             </div>
                         </div>
                     </div>
@@ -371,7 +364,7 @@
                             @foreach ($images as $key => $image)
                                 @if ($key > 0)
                                     <div class="product">
-                                        <img src="{{ asset('storage/images/' . $image) }}" alt="">
+                                        <img src="{{ asset('image-product/' . $image) }}" alt="">
                                     </div>
                                 @endif
                             @endforeach

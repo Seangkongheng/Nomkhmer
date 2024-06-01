@@ -302,20 +302,18 @@
 
                                 <a href="{{ url('/productDetail', $item->id) }}">
                                     <div class="image">
-                                        @if (isset($item->image) && !empty(json_decode($item->image)))
-                                            @php
-                                                $images = json_decode($item->image);
-                                            @endphp
-                                            @if (!empty($images[0]))
-                                                <img src="{{ asset('storage/images/' . $images[0]) }}"
-                                                    alt="">
-                                            @else
-                                                <p>No Image</p>
-                                            @endif
+                                        @if (isset($item->image) && !empty($item->image))
+                                        @php
+                                            $images = json_decode($item->image);
+                                        @endphp
+                                        @if (!empty($images) && isset($images[0]))
+                                            <img src="{{ asset('image-product/' . $images[0]) }}" alt="Product Image">
                                         @else
                                             <p>No Image</p>
                                         @endif
-
+                                    @else
+                                        <p>No Image</p>
+                                    @endif
                                     </div>
                                 </a>
 
