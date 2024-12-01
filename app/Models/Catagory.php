@@ -12,5 +12,9 @@ class Catagory extends Model
     protected $primarykey='id';
     protected $fillable=['Catagroy_name','Decription'];
 
+    public function products()
+    {
+        return $this->hasMany(productModel::class, 'cate_id');
+    }
 
 }

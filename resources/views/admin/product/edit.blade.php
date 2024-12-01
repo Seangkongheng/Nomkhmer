@@ -27,12 +27,16 @@
                 {{ csrf_field() }}
                 {{ method_field('PUT') }}
   
-
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="">catagory</label>
-                            <select class="form-select" name="cate_id" aria-label="Default select example" name="" id="">
-                                <option >{{ $product->cate_id}}</option>
+                            <select class="form-select" name="cate_id" id="">
+                                @foreach($objCategoryProduct as $category)
+                                    <option value="{{ $category->id }}" 
+                                            {{ $product->cate_id == $category->id ? 'selected' : '' }}>
+                                        {{ $category->Catagroy_name }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -65,16 +69,12 @@
                                 {{ $product->Description }}
                             </textarea>
                         </div>
-
                             <button type="submit" class="btn btn-primary">Add</button>
-
                            <a class="btn btn-warning" href="/catagory">back</a>
                             @if (session('sucessfullyMessage'))
-                            <p class="text-primary"> {{ session('sucessfullyMessage') }} </p> 
+                                <p class="text-primary"> {{ session('sucessfullyMessage') }} </p> 
                            @endif
-                        
                     </div>
-        
             </form>
         </div>
 </div>

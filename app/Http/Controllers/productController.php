@@ -6,6 +6,7 @@ use App\Jobs\ProcessImageUpload;
 use Intervention\Image\Facades\Image;
 use App\Models\Catagory;
 use App\Models\productModel;
+use Exception;
 use Illuminate\Http\Request;
 use PhpParser\Node\Stmt\Return_;
 
@@ -29,87 +30,33 @@ class productController extends Controller
         return view('admin.product.create', compact('pro'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    // public function store(Request $request)
-    // {
-    //     $requestData = $request->all();
-    //     $images = [];
-    //     if ($request->hasFile('image')) {
-    //         foreach ($request->file('image') as $file) {
-    //             $newImageName = time() . '-' . $file->getClientOriginalName();
-    //             $imgx = Image::make($file->getRealPath());
-    //             $imgx->resize(360, 360, function ($constraint) {
-    //                 $constraint->aspectRatio();
-    //             });
-    //             $file->move(public_path('storage/images'), $newImageName);
-    //             $images[] = $newImageName;
-    //         }
-    //     }
-    //     $requestData['image'] = json_encode($images);
-
-    //     productModel::create($requestData);
-    //     return redirect('/product')->with('status', 'successful');
-    // }
-
-    //store version two
-    // public function store(Request $request)
-    // {
-    //     $requestData = $request->all();
-    //     $images = [];
-
-    //     if ($request->hasFile('image')) {
-    //         $files = $request->file('image');
-    //         $batchSize = 10; // Number of files to process per batch
-    //         $batches = array_chunk($files, $batchSize);
-
-    //         foreach ($batches as $batch) {
-    //             foreach ($batch as $file) {
-    //                 try {
-    //                     $newImageName = time() . '-' . $file->getClientOriginalName();
-    //                     $imgx = Image::make($file->getRealPath());
-    //                     $imgx->resize(360, 360, function ($constraint) {
-    //                         $constraint->aspectRatio();
-    //                     });
-    //                     $file->move(public_path('storage/images'), $newImageName);
-    //                     $images[] = $newImageName;
-    //                 } catch (\Exception $e) {
-    //                     return redirect('/product')->withErrors(['error' => 'Failed to upload one or more images.']);
-    //                 }
-    //             }
-    //         }
-    //     }
-
-    //     $requestData['image'] = json_encode($images);
-    //     productModel::create($requestData);
-    //     return redirect('/product')->with('status', 'successful');
-    // }
-
     // store image last version
     public function store(Request $request)
     {
-        $requestData = $request->all();
-        $images = [];
-
-        if ($request->hasFile('image')) {
-            foreach ($request->file('image') as $file) {
-                $temporaryPath = $file->store('temp'); // Save the file temporarily
-                $newImageName = time() . '-' . $file->getClientOriginalName(); // Generate the new image name
-                ProcessImageUpload::dispatch($temporaryPath, $newImageName); // Dispatch the job with the new image name
-                $images[] = $newImageName; // Store the new image name
+        try {
+            $request->validate([
+                'image.*' => 'image|max:10240', // Validate image file size (max 10MB)
+            ]);
+    
+            $requestData = $request->all();
+            $images = [];
+    
+            if ($request->hasFile('image')) {
+                foreach ($request->file('image') as $file) {
+                    $temporaryPath = $file->store('temp'); 
+                    $newImageName = time() . '-' . $file->getClientOriginalName(); // Generate the new image name
+                    ProcessImageUpload::dispatch($temporaryPath, $newImageName); // Dispatch the job with the new image name
+                    $images[] = $newImageName; // Store the new image name
+                }
             }
+    
+            $requestData['image'] = json_encode($images); // Store the image names in the database
+            productModel::create($requestData);
+            return redirect('/product')->with('status', 'successful');
+        } catch (Exception $e) {
+            return $e->getMessage();
         }
-
-        $requestData['image'] = json_encode($images); // Store the image names in the database
-        productModel::create($requestData);
-        return redirect('/product')->with('status', 'successful');
     }
-
-
-
-
-
     /**
      * Display the specified resource.
      */
@@ -126,7 +73,8 @@ class productController extends Controller
         // $pro=productModel::find($id);
         // return view('admin.product.index');
         $product = productModel::find($id);
-        return view('admin.product.edit', compact('product'));
+        $objCategoryProduct= Catagory::all();
+        return view('admin.product.edit', compact('product','objCategoryProduct'));
     }
 
     /**
@@ -151,7 +99,6 @@ class productController extends Controller
             ['id' => $id],
             $request->all()
         );
-
         return redirect('/product')->with('status', 'Product updated successfully');
     }
 

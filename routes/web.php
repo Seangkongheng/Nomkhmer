@@ -75,9 +75,6 @@ Route::get('/dashboard', function () {
     return view('admin.index', compact('catagory', 'product', 'admin', 'customer'))->with('status', "data update");
 });
 // Route::middleware(['auth', 'isAdmin'])->group(function () {
-
-
-
     //  Route::get('/dashboard','Admin\FrontendCotroller@index');
     Route::resource('/catagory', Catagorycotroler::class);
     Route::resource('/customer', customercontroller::class);
@@ -90,7 +87,6 @@ Route::get('/dashboard', function () {
     Route::get('delete/{id}', [productController::class, 'destroy']);
     Route::get('edit_product/{id}', [productController::class, 'edit']);
     Route::put('update-product/{id}', [productController::class, 'update']);
-
     Route::get('admin/view_order/{id}', [OrderController::class, 'view']);
     Route::get('/viewReport', [viewReportController::class, 'index']);
     Route::get('admin/view_order_report/{id}', [viewReportOrdercontroller::class, 'index']);

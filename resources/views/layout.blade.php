@@ -12,11 +12,6 @@ integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbs
     <title>Document</title>
 </head>
 <body>
-    
-
-
-
-
     <div class="order-lg-2 nav-btns ">
         <div class="action-btn d-flex">
             <div class="dropdown">

@@ -55,7 +55,7 @@
                     </div>
                     <div class="col-md-12 mb-3">
                         <label for="">image</label>
-                        <input type="file" required class="form-control" name="image[]"  multiple>
+                        <input type="file" required class="form-control" name="image[]" accept="image/*"  multiple>
                         <br>
                     </div>
                     <div class="col-md-12 mb-3">

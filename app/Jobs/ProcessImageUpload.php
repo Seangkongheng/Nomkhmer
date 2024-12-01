@@ -38,7 +38,6 @@ class ProcessImageUpload implements ShouldQueue
     public function handle()
     {
         $file = Storage::get($this->temporaryPath); // Load the file from the temporary path
-
         $imgx = Image::make($file);
         $imgx->resize(360, 360, function ($constraint) {
             $constraint->aspectRatio();
